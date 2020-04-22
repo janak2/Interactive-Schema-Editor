@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 from config import *
 
-from Code.src.main import *
+from main import *
 
 
 class ColorDetector:

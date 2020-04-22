@@ -4,6 +4,7 @@ from tkinter import ttk, colorchooser,filedialog
 import glob
 from PIL import Image, ImageTk
 import io
+from main import process
 
 
 CANVAS_WIDTH = 1000
@@ -71,7 +72,9 @@ class main:
         print(file)
         ps = self.c.postscript(colormode='color')
         img = Image.open(io.BytesIO(ps.encode('utf-8')))     
-        img.save(file.name) 
+        img.save(file.name)
+        process(file.name)
+        self.load_image(file.name) 
 
             
     def undo(self):
