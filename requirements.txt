@@ -2,3 +2,6 @@ numpy
 opencv-python	
 matplotlib
 os
+ghostscript
+tkinter
+PIL
