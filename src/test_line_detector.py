@@ -1,15 +1,15 @@
-from Code.src.line_detector import *
-from Code.src.main import *
-from Code.src.config import *
-from Code.src.color_detector import *
+from line_detector import *
+from main import *
+from config import *
+from color_detector import *
 
 # Load all images
-test_image_list = load_images()
+test_image_list = load_image_list()
 
 # Select which image to analyse
 # ---- Select 1 for Breaker Schematic Diagram
 # ---- Select 2 for One Line Diagram
-image_select = 2
+image_select = 1
 
 # show original and marked image
 original_img = test_image_list[2 * image_select - 2]
@@ -19,18 +19,19 @@ show_image(marked_img)
 
 # Remove All Green from marked image
 new_img, mask = ColorDetector().get_color_image(marked_img, GREEN, COLOR_THRESHOLD['GREEN'])
-# show_image(new_img)
+show_image(new_img)
 
 # Create red mask from marked image
-red_mask, masked_img = LineDetector().get_color(new_img, RED, COLOR_THRESHOLD['RED'])
-# show_image(masked_img)
+hsv_img = LineDetector().convert_hsv(new_img)
+show_image(hsv_img)
+red_mask, masked_img = LineDetector().get_color(hsv_img)
+show_image(masked_img)
 
 # convert all red into black on marked image and show new image
 new_img = LineDetector().convert_color(new_img, red_mask)
 show_image(new_img)
 
-# hsv_img = cd.convert_hsv(img)
-# show_image(hsv_img)
+
 
 # hls_img = cd.convert_hls(img)
 # show_image(hls_img)

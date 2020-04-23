@@ -6,7 +6,7 @@ from config import *
 from color_detector import *
 
 
-def load_images(): #Ali - can you rename it to load_image_list or something else
+def load_image_list():
     path_list = ["../data/Breaker Schematic.png",
                  "../data/Breaker Schematic Marked.png",
                  "../data/One Line.png",

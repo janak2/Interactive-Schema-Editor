@@ -1,14 +1,16 @@
 import cv2
 import numpy as np
-from Code.src.color_detector import ColorDetector
-from Code.src.config import *
+from color_detector import ColorDetector
+from config import *
 
 
 class LineDetector:
-    def get_color(self, image, color, COLOR_THRESHOLD):
-        red_mask = ColorDetector().get_color_image(image, color, COLOR_THRESHOLD)[1]
-        masked = cv2.bitwise_and(image, image, mask=red_mask)
-        return red_mask, masked
+    def get_color(self, image):
+        lower = np.array([90,70,170])
+        upper = np.array([150,255,255])
+        mask = cv2.inRange(image, lower, upper)
+        masked = cv2.bitwise_and(image, image, mask=mask)
+        return mask, masked
 
     def convert_color(self, image, mask):
         image[np.where((mask != [0]))] = [0, 0, 0]
