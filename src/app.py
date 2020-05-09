@@ -6,7 +6,6 @@ from PIL import Image, ImageTk
 import io
 from main import process
 
-
 CANVAS_WIDTH = 1000
 CANVAS_HEIGHT = 800
 undo_list = []
@@ -40,7 +39,6 @@ class main:
 
     def changeW(self,e): #change Width of pen through slider
         self.penwidth = e
-           
 
     def clear(self):
         self.c.delete(ALL)
