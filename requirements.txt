@@ -1,4 +1,13 @@
+pytesseract
 numpy
 opencv-python	
 matplotlib
+<<<<<<< Updated upstream
 os
+=======
+ghostscript
+tkinter
+PIL
+os
+gs
+>>>>>>> Stashed changes
