@@ -3,7 +3,7 @@ import cv2
 import matplotlib.pyplot as plt
 import os
 from config import *
-from color_detector import *
+from detector import *
 
 
 def load_image_list():
@@ -19,17 +19,24 @@ def load_image_list():
         img_list.append(cv2.imread(path))
     return img_list
 
+
 def load_image(path):
     if not os.path.isfile(path):
         raise Exception("Path doesnot exist.")
     img = cv2.imread(path)
     return img
 
+
 def detect(img):
-    cd = ColorDetector()
-    green_img, mask = cd.get_color_image(img, GREEN, COLOR_THRESHOLD['GREEN'])
-    #show_image(green_img,"green")
-    return green_img
+    cd = Color()
+    # green_img, mask = cd.get_color_image(img, GREEN, COLOR_THRESHOLD['GREEN'])
+    mask_green = cd.get_mask(img, GREEN, COLOR_THRESHOLD['GREEN'], "BRG")
+    marked_img_nogreen = cd.convert_color(img, mask_green, 1)
+    # show_image(mask_green)
+    # show_image(marked_img_nogreen)
+
+    # show_image(green_img,"green")
+    return marked_img_nogreen
 
 
 def save_image(path, img):
@@ -42,12 +49,14 @@ def show_image(img: object, name: object = "") -> object:
     plt.axis("off")
     plt.show()
 
-def process(path,save_name=""):
+
+def process(path, save_name=""):
     img = load_image(path)
     img = detect(img)
     if save_name == "":
         save_name = path
-    img = save_image(save_name,img)
+    img = save_image(save_name, img)
+
 
 if __name__ == "__main__":
     pass
