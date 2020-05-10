@@ -3,9 +3,8 @@ import cv2
 import matplotlib.pyplot as plt
 import os
 from config import *
-<<<<<<< HEAD
-from color_detector import *
-from line_detector import *
+from old.color_detector import *
+from old.line_detector import *
 from detector import *
 
 
