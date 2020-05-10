@@ -85,7 +85,7 @@ class main:
     def drawWidgets(self):
         self.controls = Frame(self.master,padx = 5,pady = 5)
         Label(self.controls, text='Pen Width:',font=('arial 18')).grid(row=0,column=0)
-        self.slider = ttk.Scale(self.controls,from_= 5, to = 100,command=self.changeW,orient=VERTICAL)
+        self.slider = ttk.Scale(self.controls,from_= 2, to = 50,command=self.changeW,orient=VERTICAL)
         self.slider.set(self.penwidth)
         self.slider.grid(row=0,column=1,ipadx=30)
         self.controls.pack(side=LEFT)

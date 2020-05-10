@@ -1,6 +1,6 @@
 import cv2
 import numpy as np
-from color_detector import ColorDetector
+from color_detector import *
 from config import *
 
 
