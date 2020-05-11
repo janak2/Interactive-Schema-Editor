@@ -18,7 +18,7 @@ cd = Color()
 
 # Remove ALL Green from marked image
 mask_green = cd.get_mask(marked_img, GREEN, COLOR_THRESHOLD['GREEN'], "BRG")
-#show_image(mask_green)
+show_image(mask_green)
 
 marked_img_nogreen = cd.convert_color(marked_img, mask_green, 1)
 show_image(marked_img_nogreen)
@@ -27,18 +27,18 @@ show_image(marked_img_nogreen)
 # Add ALL Red from marked image
 hsv_img = cd.convert_hsv(marked_img_nogreen)
 mask_red = cd.get_mask(hsv_img, RED, COLOR_THRESHOLD['RED'], "HSV")
-#show_image(mask_red)
+show_image(mask_red)
 
 marked_img_nored_b = cd.convert_color(marked_img_nogreen, mask_red, 0)
-#show_image(marked_img_nored_b)
+show_image(marked_img_nored_b)
 
 marked_img_nored_w = cd.convert_color(marked_img_nogreen, mask_red, 1)
-#show_image(marked_img_nored_w)
+show_image(marked_img_nored_w)
 
 
 #Identify and add red text
 mask_red_invert = cd.invert_color(mask_red)
-#show_image(mask_red_invert)
+show_image(mask_red_invert)
 
 
 # Create text from image
