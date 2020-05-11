@@ -50,7 +50,7 @@ class Text:
     def get_text(self, gray, marked, blank):
         # Mention the installed location of Tesseract-OCR in your system
         global pix
-        pytesseract.pytesseract.tesseract_cmd = '../tesseract/4.1.1/bin/tesseract'
+        #pytesseract.pytesseract.tesseract_cmd = '../tesseract/4.1.1/bin/tesseract'
 
         # Convert the image to gray scale
         # gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
