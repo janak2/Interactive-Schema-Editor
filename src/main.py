@@ -64,13 +64,13 @@ def show_image(img: object, name: object = "") -> object:
     plt.show()
 
 
-def process(path, save_name=""):
+def process(path,save_name=""):
     img = load_image(path)
     img = detect(img)
     if save_name == "":
         save_name = path
     img = save_image(save_name, img)
-
+    
 
 if __name__ == "__main__":
     pass

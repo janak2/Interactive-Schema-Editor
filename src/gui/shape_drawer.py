@@ -13,8 +13,9 @@ class ShapeDrawer:
         #canvas.bind('<ButtonRelease-1>',self.reset)
         self.canvas = canvas
         self.drawn  = None
-        self.kinds = {"oval":canvas.create_oval, "rectangle":canvas.create_rectangle, "freehand":canvas.create_line}
-        self.shape = "freehand"
+        self.kinds = {"oval":canvas.create_oval, "rectangle":canvas.create_rectangle,
+                      "freehand":canvas.create_line,"line":canvas.create_line}
+        self.shape = "line"
         self.shape_create = self.kinds[self.shape]
         self.penwidth = 5
         self.color = 'black'
@@ -40,7 +41,12 @@ class ShapeDrawer:
         else:            
             if self.drawn: 
                 canvas.delete(self.drawn)
-            objectId = self.shape_create(self.start.x, self.start.y, event.x, event.y,width=self.penwidth)
+                objectId = None
+            try:
+                objectId = self.shape_create(self.start.x, self.start.y, event.x, event.y,width=self.penwidth,outline=self.color)
+            except:
+                #print(e)
+                objectId = self.shape_create(self.start.x, self.start.y, event.x, event.y,width=self.penwidth,fill=self.color)                
             self.add_to_undo(objectId)
             if trace: 
                 print(objectId)
@@ -71,8 +77,9 @@ class ShapeDrawer:
     def set_pen_width(self,width):
         self.penwidth = width 
         
-    def set_color(self):
-        self.color=colorchooser.askcolor(color=self.color)[1]
+    def set_color(self,color):
+        print("in color",color)
+        self.color=color
         
     def undo(self):
         obj = self.undo_list.pop()
