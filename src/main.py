@@ -43,14 +43,18 @@ def detect(img):
     #return new_img
 
     cd = Color()
-    # green_img, mask = cd.get_color_image(img, GREEN, COLOR_THRESHOLD['GREEN'])
-    mask_green = cd.get_mask(img, GREEN, COLOR_THRESHOLD['GREEN'], "BRG")
-    marked_img_nogreen = cd.convert_color(img, mask_green, 1)
-    # show_image(mask_green)
-    # show_image(marked_img_nogreen)
+    mask_green = cd.get_mask(marked_img, GREEN, COLOR_THRESHOLD['GREEN'], "BRG")
+    marked_img_nogreen = cd.convert_color(marked_img, mask_green, 1)
+    hsv_img = cd.convert_hsv(marked_img_nogreen)
+    mask_red = cd.get_mask(hsv_img, RED, COLOR_THRESHOLD['RED'], "HSV")
+    marked_img_nored_b = cd.convert_color(marked_img_nogreen, mask_red, 0)
+    marked_img_nored_w = cd.convert_color(marked_img_nogreen, mask_red, 1)
+    mask_red_invert = cd.invert_color(mask_red)
 
-    # show_image(green_img,"green")
-    return marked_img_nogreen
+    cd = Text()
+    marked_img_text = cd.get_text(mask_red_invert, marked_img_nogreen, marked_img_nored_w)
+
+    return marked_img_text
 
 
 def save_image(path, img):
