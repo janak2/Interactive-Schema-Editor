@@ -17,6 +17,9 @@ EDIT_ROW = 3
 IMAGE_LABEL_ROW = 4
 IMAGE_ROW = 5
 
+OLD_IMAGE_WIDTH = 500
+OLD_IMAGE_HEIGHT = 500
+
 class main:
     def __init__(self,master):
         self.master = master
@@ -24,7 +27,7 @@ class main:
         self.color_bg = 'white'
         self.old_x = None
         self.old_y = None
-        self.penwidth = 5
+        self.penwidth = 2
         self.drawWidgets()
         self.shape_drawer = ShapeDrawer(self.c)
         self.image_handler = ImageHandler(self.c)
@@ -57,7 +60,7 @@ class main:
         
     def update_image(self):
         self.image_handler.update_image(detect,self.old_image_label,
-                                        self.controls.winfo_width(),int(self.controls.winfo_height()))
+                                        OLD_IMAGE_WIDTH,OLD_IMAGE_HEIGHT)
         
         
     def drawWidgets(self):
@@ -65,7 +68,7 @@ class main:
         Label(self.controls, text='Pen Width:',font=('arial 18')).grid(row=PEN_SLIDER_ROW,column=0)
         Label(self.controls, text='2',font=('arial 10')).grid(row=PEN_SLIDER_ROW,column=1)
         
-        self.slider = ttk.Scale(self.controls,from_= 1, to = 50,command=self.changeW,orient=HORIZONTAL)
+        self.slider = ttk.Scale(self.controls,from_= 2, to = 50,command=self.changeW,orient=HORIZONTAL)
         #self.slider.set(self.penwidth)
         self.slider.grid(row=PEN_SLIDER_ROW,column=2,ipadx=30)
         Label(self.controls, text='50',font=('arial 10')).grid(row=PEN_SLIDER_ROW,column=3)

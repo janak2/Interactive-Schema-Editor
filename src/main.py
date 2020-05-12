@@ -29,7 +29,7 @@ def load_image(path):
     return img
 
 
-def detect(img):
+def detect(marked_img):
     #cd = ColorDetector()
     #green_img, mask = cd.get_color_image(img, GREEN, COLOR_THRESHOLD['GREEN'])
     #show_image(green_img,"green")
@@ -53,8 +53,12 @@ def detect(img):
 
     cd = Text()
     marked_img_text = cd.get_text(mask_red_invert, marked_img_nogreen, marked_img_nored_w)
+        
+    ct = Template()
+    temp_img = ct.match_template(marked_img_text, mask_red_invert)
+    #show_image(temp_img)
 
-    return marked_img_text
+    return temp_img
 
 
 def save_image(path, img):

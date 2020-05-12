@@ -8,16 +8,16 @@ class ShapeDrawer:
         #self.canvas.pack()
         canvas.bind('<ButtonPress-1>', self.onStart) 
         canvas.bind('<B1-Motion>',     self.onGrow)  
-        canvas.bind('<Double-1>',      self.onClear) 
-        canvas.bind('<ButtonPress-3>', self.onMove)  
+        #canvas.bind('<Double-1>',      self.onClear) 
+        #canvas.bind('<ButtonPress-3>', self.onMove)  
         #canvas.bind('<ButtonRelease-1>',self.reset)
         self.canvas = canvas
         self.drawn  = None
         self.kinds = {"oval":canvas.create_oval, "rectangle":canvas.create_rectangle,
                       "freehand":canvas.create_line,"line":canvas.create_line}
-        self.shape = "line"
+        self.shape = "freehand"
         self.shape_create = self.kinds[self.shape]
-        self.penwidth = 5
+        self.penwidth = 2
         self.color = 'black'
         self.undo_list = []
 
@@ -28,13 +28,13 @@ class ShapeDrawer:
         self.start = event
         self.drawn = None
         self.undo_list.append([])
-        print("in start",self.undo_list)
+        #print("in start",self.undo_list)
         
     def onGrow(self, event):                         
         canvas = event.widget
         if self.shape == "freehand":
             self.start = event
-            objectId = self.shape_create(self.start.x, self.start.y, event.x, event.y,width=self.penwidth,capstyle=ROUND,smooth=True)
+            objectId = self.shape_create(self.start.x, self.start.y, event.x, event.y,width=self.penwidth,capstyle=ROUND,smooth=True,fill=self.color)
             self.add_to_undo(objectId)
             self.drawn = objectId
             

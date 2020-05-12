@@ -2,8 +2,7 @@ import cv2
 import pytesseract
 import numpy as np
 from config import *
-from main import *
-
+import math
 
 class Color:
     def __init__(self):
@@ -63,7 +62,7 @@ class Text:
         # of the rectangle to be detected.
         # A smaller value like (10, 10) will detect
         # each word instead of a sentence.
-        rect_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (8, 8))
+        rect_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (8,8))
 
         # Applying dilation on the threshold image
         dilation = cv2.dilate(thresh1, rect_kernel, iterations=1)
@@ -82,6 +81,7 @@ class Text:
         # Then rectangular part is cropped and passed on
         # to pytesseract for extracting text from it
         # Extracted text is then written into the text file
+        new_img = blank
         for cnt in contours:
             x, y, w, h = cv2.boundingRect(cnt)
 
@@ -162,3 +162,164 @@ class Line:
             x1, y1, x2, y2 = line
             cv2.line(image, (x1, y1), (x2, y2), color, thickness)
         return image
+    
+    
+class Template:
+    def __init__(self):
+        self.cap = cv2.imread("../data/capacitor.png")
+        self.cap = cv2.cvtColor(self.cap, cv2.COLOR_RGB2GRAY)
+    
+    def match_template(self,img, mask_red_invert):
+        ret, thresh1 = cv2.threshold(mask_red_invert, 0, 255, cv2.THRESH_OTSU | cv2.THRESH_BINARY_INV)
+        rect_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (10, 10))
+        
+        dilation = cv2.dilate(thresh1, rect_kernel, iterations=1)
+        
+        contours, hierarchy = cv2.findContours(dilation, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+
+        for cnt in contours:
+            x, y, w, h = cv2.boundingRect(cnt)
+        
+            #print(x,y,w,h)
+            cropped = mask_red_invert[y:y + h, x:x + w]
+            #show_image(cropped)
+            #print(cropped.shape)
+            
+            #cap = load_image("../data/capacitor.png")
+            #show_image(cap)
+            cap = cv2.resize(self.cap, (w,h),interpolation =cv2.INTER_AREA)
+            #show_image(cap)
+            #print(cap.shape)
+            d1 = self.calculate_MHD_and(cropped,cap)
+            d2 = self.calculate_MHD_abs(cropped,cap)
+            print(self.calculate_MHD_abs(cropped,cap),self.calculate_MHD_and(cropped,cap))
+            if d1 < 0.064 and d2 < 0.002 and d1 > 0.055:
+                img[y:y + h, x:x + w] = cv2.cvtColor(cap, cv2.COLOR_GRAY2BGR)
+                
+            #show_image(gray)
+            #show_image(gray)
+            
+        return img
+            
+    def calculate_MHD_and(self,stroke, template):
+        w,h = template.shape
+        s = self.invert_color(stroke)
+        #show_image(s)
+        template_inv = self.invert_color(template)
+        
+        a = cv2.bitwise_and(s,template_inv)
+        #show_image(a)
+        locations_t = cv2.findNonZero(template_inv)
+        
+        t = np.sum(a)/(255*len(locations_t))
+        
+        return t
+    
+    def invert_color(self, image):
+        return 255 - image
+    
+    def calculate_MHD_abs(self,stroke, template):
+        w,h = template.shape
+        s = self.invert_color(stroke)
+        #show_image(s)
+        
+        template_inv = self.invert_color(template)
+        
+        
+        locations_s = cv2.findNonZero(s)
+        #print(locations_s)
+        
+        locations_t = cv2.findNonZero(template_inv)
+        #print(locations_t)
+        
+        
+        s_x = np.array([x[0][0] for x in locations_s])
+        s_y = np.array([x[0][1] for x in locations_s])
+        t_x = np.array([x[0][0] for x in locations_t])
+        t_y = np.array([x[0][1] for x in locations_t])
+        
+        ha = 0 
+        for temp in locations_s:
+            mind = math.inf
+            xa = temp[0][0]
+            ya = temp[0][1]
+            
+            d = 0.5*(np.abs(t_x-xa)+np.abs(t_y-ya))
+            mind = np.amin(d)
+            #print(mind)
+            ha += mind
+        
+        print(ha)
+        ha *= 1/(len(s_x)**2)
+    
+        hb = 0 
+        for temp in locations_t:
+            mind = math.inf
+            xa = temp[0][0]
+            ya = temp[0][1]
+            
+            d = 0.5*(np.abs(s_x-xa)+np.abs(s_y-ya))
+            mind = np.amin(d)
+            #print(d,mind)
+            hb += mind
+        hb *= 1/(len(t_x)**2)
+        mhd = max(ha,hb)
+        
+        #print(ha,hb,len(s_x),len(t_x))
+        return mhd
+    
+    def calculate_MHD(self,stroke, template):
+        w,h = template.shape
+        s = self.invert_color(stroke)
+        #show_image(s)
+        
+        template_inv = self.invert_color(template)
+        
+        
+        locations_s = cv2.findNonZero(s)
+        #print(locations_s)
+        
+        locations_t = cv2.findNonZero(template_inv)
+        #print(locations_t)
+        
+        
+        s_x = np.array([x[0][0] for x in locations_s])
+        s_y = np.array([x[0][1] for x in locations_s])
+        t_x = np.array([x[0][0] for x in locations_t])
+        t_y = np.array([x[0][1] for x in locations_t])
+        
+        ha = 0 
+        for temp in locations_s:
+            mind = math.inf
+            xa = temp[0][0]
+            ya = temp[0][1]
+            
+            d = np.sqrt(np.square(t_x-xa)+np.square(t_y-ya))
+            mind = np.amin(d)
+            #print(mind)
+            ha += mind
+        
+        print(ha)
+        ha *= 1/(len(s_x)**2)
+    
+        hb = 0 
+        for temp in locations_t:
+            mind = math.inf
+            xa = temp[0][0]
+            ya = temp[0][1]
+            
+            d = np.sqrt(np.square(s_x-xa)+np.square(s_y-ya))
+            mind = np.amin(d)
+            #print(d,mind)
+            hb += mind
+        hb *= 1/(len(t_x)**2)
+        mhd = max(ha,hb)
+        
+        #print(ha,hb,len(s_x),len(t_x))
+        return mhd
+
+
+
+
+
+        
